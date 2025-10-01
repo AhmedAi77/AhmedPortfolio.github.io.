@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ahmed Waleed — Portfolio</title>
+  <meta name="description" content="Ahmed Waleed — IT Engineer. Web development, mobile design, networking, device setup and 3D/motion. Available for freelance projects." />
+  <!-- Open Graph / Social -->
+  <meta property="og:title" content="Ahmed Waleed — Portfolio" />
+  <meta property="og:description" content="IT Engineer available for freelance — Web Dev, Networking, Mobile & UI/UX, Device support and 3D motion design." />
+  <meta property="og:image" content="WhatsApp Image 2025-09-29 at 20.44.48_7b971bcf.jpg" />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="vectorised-1759220894366.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <!-- Top navigation (brand + menu + CTA) -->
+    <header class="site-header">
+      <div class="container nav">
+        <!-- Replace with your own logo/mark and text -->
+        <div class="brand">
+          <img class="brand-logo" src="vectorised-1759220894366.svg" alt="Ahmed Waleed logo" />
+          <span class="brand-text">Ahmed Waleed</span>
+        </div>
+        <!-- Responsive nav: hidden on mobile until toggled in JS -->
+         <nav class="primary-nav" aria-label="Primary">
+          <button class="nav-toggle" aria-expanded="false" aria-controls="menu">☰</button>
+          <ul id="menu" class="menu">
+            <!-- Top bar items now trigger modals instead of scrolling -->
+            <li><a class="active" href="#">Home</a></li>
+            <li><a data-modal-target="#modal-about" href="#">About</a></li>
+            <!-- Removed Works from the menu; access via hero button -->
+            <li><a data-modal-target="#modal-services" href="#">Services</a></li>
+         </ul>
+        </nav>
+        <div class="cta">
+          <!-- CTA opens Contact modal -->
+          <a class="button button-accent" href="#" data-modal-target="#modal-contact">Let's Talk →</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <!-- Hero: large headline with outlined word and decorative shapes -->
+      <section class="hero">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <!-- Small line above title -->
+            <p class="availability">Currently available for freelance  </p>
+            <h1 class="hero-title">
+              Ahmed Waleed<br />
+              <span class="outline">IT Engineer</span>
+            </h1>
+            <!-- CTA group under the title -->
+            <div class="hero-actions">
+              <!-- Hero button opens Works modal -->
+              <a class="play" href="#" data-modal-target="#modal-works" aria-label="View my work">
+                <span class="play-ring"></span>
+                <span class="play-dot"></span>
+                <svg class="work-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M10 6h4a1 1 0 0 1 1 1v1h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2h3V7a1 1 0 0 1 1-1Zm4 2V7h-4v1h4Zm-9 5h14v4a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-4Z"/>
+                </svg>
+                <span class="play-text">View My Works ➚ </span>
+              </a>
+            </div>
+          </div>
+          <!-- Right side decorative visuals (add your photo later) -->
+          <div class="hero-figure" aria-hidden="true">
+            <div class="swirl"></div>
+            <div class="orb"></div>
+            <figure class="hero-photo"> <picture> <img src="WhatsApp Image 2025-09-29 at 20.44.48_7b971bcf.jpg" alt="Portrait of Ahmed Waleed" loading="eager" /> </picture> </figure> </div> </div>
+          </div>
+        </div>
+        <!-- Vertical label at left -->
+        <div class="scroll-indicator" aria-hidden="true"></div>
+      </section>
+
+      <!-- Neon accent marquee listing capabilities -->
+      <section class="marquee" aria-label="Services list">
+        <div class="marquee-track">
+          <span>*  Web Dev </span>
+          <span>* Networking</span>
+          <span>* Mobile Application Design</span>
+          <span>* UI/UX Mobile Design</span>
+          <span>* Devices Fix and setup </span>
+          <span>* 3D Motion Design</span>
+          
+        </div>
+      </section>
+
+      <!-- Modal containers (opened via nav). Replace placeholder content later. -->
+      <div class="modals-root" aria-live="polite">
+        <!-- Modal: About -->
+        <div id="modal-about" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-about-title" aria-hidden="true">
+          <div class="modal-panel">
+            <div class="modal-header">
+              <h2 id="modal-about-title">About</h2>
+              <button class="modal-close" aria-label="Close about">×</button>
+            </div>
+            <div class="modal-body">
+              <p>Hello — I'm Ahmed, an IT Engineer specialising in full-stack web development, mobile UI/UX, networking and device support. I design and build performant, accessible interfaces and also deliver device setup & troubleshooting for small businesses.</p>
+              <ul>
+                <li><strong>Location:</strong> Remote / Cairo</li>
+                <li><strong>Availability:</strong> Open for freelance and contract work</li>
+                <li><strong>Skills:</strong> HTML, CSS, JavaScript, Node.js, React, Flutter basics, TCP/IP, router configuration, device repair</li>
+              </ul>
+              <p>Replace this section with your personal bio, experience highlights and links to CV or LinkedIn.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal: Works -->
+        <div id="modal-works" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-works-title" aria-hidden="true">
+          <div class="modal-panel">
+            <div class="modal-header">
+              <h2 id="modal-works-title">Works</h2>
+              <button class="modal-close" aria-label="Close works">×</button>
+            </div>
+            <div class="modal-body">
+              <p>Featured projects. Click a card to view details or replace thumbnails with your own project images.</p>
+              <div class="projects-grid">
+                <article class="project-card" tabindex="0">
+                  <img src="WhatsApp Image 2025-09-29 at 20.44.48_7b971bcf.jpg" alt="Project 1 thumbnail" />
+                  <div class="project-meta">
+                    <h3>Project One</h3>
+                    <p>Web app — Frontend & integrations</p>
+                  </div>
+                </article>
+                <article class="project-card" tabindex="0">
+                  <img src="WhatsApp Image 2025-09-29 at 20.44.48_7b971bcf.jpg" alt="Project 2 thumbnail" />
+                  <div class="project-meta">
+                    <h3>Project Two</h3>
+                    <p>Mobile UI/UX concept</p>
+                  </div>
+                </article>
+                <article class="project-card" tabindex="0">
+                  <img src="WhatsApp Image 2025-09-29 at 20.44.48_7b971bcf.jpg" alt="Project 3 thumbnail" />
+                  <div class="project-meta">
+                    <h3>Networking Setup</h3>
+                    <p>Small office network & device provisioning</p>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal: Services -->
+        <div id="modal-services" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-services-title" aria-hidden="true">
+          <div class="modal-panel">
+            <div class="modal-header">
+              <h2 id="modal-services-title">Services</h2>
+              <button class="modal-close" aria-label="Close services">×</button>
+            </div>
+            <div class="modal-body">
+              <div class="services-list">
+                <div class="service-card">
+                  <h4>Web Development</h4>
+                  <p>Responsive sites, single-page apps, and CMS-powered pages.</p>
+                </div>
+                <div class="service-card">
+                  <h4>Mobile & UI/UX</h4>
+                  <p>Mobile-first designs, prototypes and handoffs for developers.</p>
+                </div>
+                <div class="service-card">
+                  <h4>Networking & Devices</h4>
+                  <p>Router setup, local networking, device repair and configuration.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Removed Testimonial and Blog modals per request -->
+
+        <!-- Modal: Contact -->
+        <div id="modal-contact" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-contact-title" aria-hidden="true">
+          <div class="modal-panel">
+            <div class="modal-header">
+              <h2 id="modal-contact-title">Contact</h2>
+              <button class="modal-close" aria-label="Close contact">×</button>
+            </div>
+            <div class="modal-body">
+              <p>Fill the form below or use the email link to reach out. This form will open your email client with a prefilled message.</p>
+              <form id="contact-form" class="contact-form">
+                <label for="contact-name">Name</label>
+                <input id="contact-name" name="name" type="text" required />
+
+                <label for="contact-email">Email</label>
+                <input id="contact-email" name="email" type="email" required />
+
+                <label for="contact-message">Message</label>
+                <textarea id="contact-message" name="message" rows="6" required></textarea>
+
+                <div class="contact-actions">
+                  <button type="submit" class="button button-accent">Send Message</button>
+                  <button type="button" class="button" id="contact-cancel">Cancel</button>
+                </div>
+                <p id="contact-feedback" aria-live="polite" class="contact-feedback"></p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>© <span id="year"></span> Ahmed Waleed. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+  </html>
+
+
