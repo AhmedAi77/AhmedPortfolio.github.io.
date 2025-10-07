@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects - Ahmed Waleed</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.6;
+            color: #d4af37;
+            background: #0a0a0a;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        nav .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        nav .logo a {
+            display: flex;
+            align-items: center;
+        }
+
+        nav .logo img {
+            height: 80px;
+            width: auto;
+            filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.5));
+            transition: all 0.3s ease;
+        }
+
+        nav .logo img:hover {
+            filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.8));
+            transform: scale(1.05);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 3rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #d4af37;
+            font-weight: 400;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #d4af37, #f4e4b0);
+            transition: width 0.3s;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Header */
+        .page-hero {
+            margin-top: 120px;
+            padding: 6rem 3rem;
+            background: #0a0a0a;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .page-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 70%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.5; }
+            50% { transform: translateX(-50%) scale(1.1); opacity: 0.8; }
+        }
+
+        .page-hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #d4af37 0%, #f4e4b0 50%, #d4af37 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 300;
+            letter-spacing: 4px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-hero p {
+            font-size: 1.3rem;
+            color: rgba(212, 175, 55, 0.7);
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Projects Section */
+        .projects-section {
+            padding: 6rem 3rem;
+            background: #0f0f0f;
+            position: relative;
+        }
+
+        .projects-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #d4af37, transparent);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .project-card {
+            background: rgba(212, 175, 55, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            overflow: hidden;
+            transition: all 0.5s;
+            position: relative;
+            cursor: pointer;
+            filter: blur(8px);
+        }
+        
+        .project-card:first-of-type {
+            filter: blur(0);
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(212, 175, 55, 0.15) 0%, transparent 100%);
+            transition: top 0.6s ease;
+            z-index: 0;
+        }
+
+        .project-card:hover::before {
+            top: 0;
+        }
+
+        .project-card:hover {
+            border-color: #d4af37;
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 70px rgba(212, 175, 55, 0.4);
+        }
+
+        .project-header {
+            padding: 2.5rem 2rem 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .project-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .project-card h3 {
+            color: #d4af37;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+            font-weight: 400;
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .project-divider {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, #d4af37, transparent);
+            margin: 1rem 0 1.5rem;
+        }
+
+        .project-description {
+            padding: 0 2rem 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .project-description p {
+            color: rgba(212, 175, 55, 0.8);
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .project-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .project-features li {
+            color: rgba(212, 175, 55, 0.7);
+            padding: 0.6rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .project-features li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: #d4af37;
+            font-size: 1.2rem;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tag {
+            background: transparent;
+            color: #d4af37;
+            padding: 0.5rem 1.2rem;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            font-family: 'Segoe UI', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .project-card:hover .tag {
+            border-color: #d4af37;
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .project-link {
+            display: inline-block;
+            color: #d4af37;
+            text-decoration: none;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            padding: 0.8rem 2rem;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(212, 175, 55, 0.1);
+            transition: left 0.4s;
+        }
+
+        .project-link:hover::before {
+            left: 0;
+        }
+
+        .project-link:hover {
+            border-color: #d4af37;
+            transform: translateX(5px);
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 6rem 3rem;
+            background: #0a0a0a;
+            position: relative;
+        }
+
+        .stats-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #d4af37, transparent);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: rgba(212, 175, 55, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background: linear-gradient(0deg, rgba(212, 175, 55, 0.1) 0%, transparent 100%);
+            transition: height 0.5s;
+        }
+
+        .stat-card:hover::after {
+            height: 100%;
+        }
+
+        .stat-card:hover {
+            border-color: #d4af37;
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            color: #d4af37;
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: rgba(212, 175, 55, 0.7);
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Footer */
+        footer {
+            background: #0a0a0a;
+            color: rgba(212, 175, 55, 0.6);
+            text-align: center;
+            padding: 3rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .page-hero h1 {
+                font-size: 3rem;
+            }
+
+            .projects-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+
+            nav .container {
+                padding: 0 1.5rem;
+            }
+
+            nav .logo img {
+                height: 60px;
+            }
+
+            nav ul {
+                gap: 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .page-hero {
+                padding: 4rem 1.5rem;
+                margin-top: 100px;
+            }
+
+            .page-hero h1 {
+                font-size: 2.5rem;
+                letter-spacing: 2px;
+            }
+
+            .page-hero p {
+                font-size: 1rem;
+            }
+
+            .projects-section {
+                padding: 4rem 1.5rem;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .project-header {
+                padding: 2rem 1.5rem 1rem;
+            }
+
+            .project-card h3 {
+                font-size: 1.5rem;
+            }
+
+            .project-description {
+                padding: 0 1.5rem 1.5rem;
+            }
+
+            .stats-section {
+                padding: 4rem 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 1.5rem;
+            }
+
+            .stat-card {
+                padding: 2rem 1rem;
+            }
+
+            .stat-number {
+                font-size: 2.5rem;
+            }
+
+            .stat-label {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            nav .logo img {
+                height: 50px;
+            }
+
+            .page-hero h1 {
+                font-size: 2rem;
+            }
+
+            .page-hero p {
+                font-size: 0.9rem;
+            }
+
+            .project-icon {
+                font-size: 2.5rem;
+            }
+
+            .project-card h3 {
+                font-size: 1.3rem;
+            }
+
+            .project-description p {
+                font-size: 0.95rem;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <a href="https://ahmedai77.github.io/AhmedPortfolio.github.io./">
+                    <img src="LOGO AW3.svg" alt="Ahmed Waleed Logo">
+                </a>
+            </div>
+            <ul>
+                <li><a href="index.html">HOME</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Hero -->
+    <section class="page-hero">
+        <h1>MY PROJECTS</h1>
+        <p>INNOVATIVE SOLUTIONS & CREATIVE IMPLEMENTATIONS</p>
+    </section>
+
+    <!-- Projects Section -->
+    <section class="projects-section">
+        <div class="container">
+            <div class="projects-grid">
+                <!-- Project 1 -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-icon">🎮</div>
+                        <h3>SIMPLE GAME I HAD FUN WITH IT</h3>
+                        <div class="project-divider"></div>
+                    </div>
+                    <div class="project-description">
+                        <p>Designed and implemented a fully functional game and learnd from errors during that </p>
+                        <ul class="project-features">
+                            <li>learing how to work with html css javascriot</li>
+                            <li>learnd how to improt assets and use them </li>
+                            <li>how to make gui fun</li>
+                            <li>make playable game with win and losss</li>
+                        </ul>
+                        <div class="project-tags">
+                            <span class="tag">HTML</span>
+                            <span class="tag">CSS</span>
+                            <span class="tag">JAVASCRIPT</span>
+                            <span class="tag">VSCODE</span>
+                        </div>
+                        <a href="evil_haifa_game (1).html" class="project-link" target="_blank">VIEW PROJECT →</a>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-icon">🖥️</div>
+                        <h3>ENTERPRISE SYSTEM MANAGER</h3>
+                        <div class="project-divider"></div>
+                    </div>
+                    <div class="project-description">
+                        <p>Built a comprehensive management platform for monitoring and administering Linux and Windows server infrastructure.</p>
+                        <ul class="project-features">
+                            <li>Unified dashboard for multiple systems</li>
+                            <li>Automated health checks and reporting</li>
+                            <li>Security monitoring and compliance</li>
+                            <li>Resource optimization scripts</li>
+                        </ul>
+                        <div class="project-tags">
+                            <span class="tag">LINUX</span>
+                            <span class="tag">WINDOWS</span>
+                            <span class="tag">BASH</span>
+                            <span class="tag">DEVOPS</span>
+                        </div>
+                        <a href="#" class="project-link">VIEW DETAILS →</a>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-icon">🤖</div>
+                        <h3>INTELLIGENT CHATBOT</h3>
+                        <div class="project-divider"></div>
+                    </div>
+                    <div class="project-description">
+                        <p>Developed a sophisticated conversational AI agent with natural language processing capabilities and context awareness.</p>
+                        <ul class="project-features">
+                            <li>Advanced NLP and intent recognition</li>
+                            <li>Multi-language support</li>
+                            <li>Custom training on domain data</li>
+                            <li>Seamless API integration</li>
+                        </ul>
+                        <div class="project-tags">
+                            <span class="tag">PYTHON</span>
+                            <span class="tag">NLP</span>
+                            <span class="tag">ML</span>
+                            <span class="tag">API</span>
+                        </div>
+                        <a href="#" class="project-link">VIEW DETAILS →</a>
+                    </div>
+                </div>
+
+                <!-- Project 4 -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-icon">📊</div>
+                        <h3>DATA ANALYTICS DASHBOARD</h3>
+                        <div class="project-divider"></div>
+                    </div>
+                    <div class="project-description">
+                        <p>Created an interactive dashboard for visualizing complex datasets and generating actionable business insights.</p>
+                        <ul class="project-features">
+                            <li>Real-time data visualization</li>
+                            <li>Custom metrics and KPI tracking</li>
+                            <li>Automated report generation</li>
+                            <li>Predictive analytics models</li>
+                        </ul>
+                        <div class="project-tags">
+                            <span class="tag">PYTHON</span>
+                            <span class="tag">DATA VIZ</span>
+                            <span class="tag">SQL</span>
+                            <span class="tag">ANALYTICS</span>
+                        </div>
+                        <a href="#" class="project-link">VIEW DETAILS →</a>
+                    </div>
+                </div>
+
+                <!-- Project 5 -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-icon">🔐</div>
+                        <h3>SECURITY AUDIT TOOL</h3>
+                        <div class="project-divider"></div>
+                    </div>
+                    <div class="project-description">
+                        <p>Engineered an automated security scanning and auditing system for identifying vulnerabilities and compliance gaps.</p>
+                        <ul class="project-features">
+                            <li>Vulnerability scanning and detection</li>
+                            <li>Compliance framework mapping</li>
+                            <li>Automated remediation suggestions</li>
+                            <li>Detailed security reporting</li>
+                        </ul>
+                        <div class="project-tags">
+                            <span class="tag">PYTHON</span>
+                            <span class="tag">SECURITY</span>
+                            <span class="tag">AUDIT</span>
+                            <span class="tag">COMPLIANCE</span>
+                        </div>
+                        <a href="#" class="project-link">VIEW DETAILS →</a>
+                    </div>
+                </div>
+
+                <!-- Project 6 -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-icon">🌐</div>
+                        <h3>WEB SCRAPING FRAMEWORK</h3>
+                        <div class="project-divider"></div>
+                    </div>
+                    <div class="project-description">
+                        <p>Developed a robust web scraping framework for extracting, processing, and storing data from multiple online sources.</p>
+                        <ul class="project-features">
+                            <li>Dynamic content handling</li>
+                            <li>Anti-bot bypass techniques</li>
+                            <li>Distributed scraping architecture</li>
+                            <li>Data validation and cleaning</li>
+                        </ul>
+                        <div class="project-tags">
+                            <span class="tag">PYTHON</span>
+                            <span class="tag">SCRAPY</span>
+                            <span class="tag">SELENIUM</span>
+                            <span class="tag">DATA</span>
+                        </div>
+                        <a href="#" class="project-link">VIEW DETAILS →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">PROJECTS COMPLETED</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">TECHNOLOGIES MASTERED</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">50</div>
+                    <div class="stat-label">HOURS OF CODING</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">20%</div>
+                    <div class="stat-label">DEDICATION</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 AHMED WALEED — ALL RIGHTS RESERVED</p>
+    </footer>
+
+    <script>
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Navigation scroll effect
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const nav = document.querySelector('nav');
+            
+            if (scrolled > 50) {
+                nav.style.background = 'rgba(10, 10, 10, 0.98)';
+                nav.style.borderBottom = '1px solid rgba(212, 175, 55, 0.3)';
+            } else {
+                nav.style.background = 'rgba(10, 10, 10, 0.95)';
+                nav.style.borderBottom = '1px solid rgba(212, 175, 55, 0.2)';
+            }
+        });
+
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.project-card, .stat-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s ease-out';
+            observer.observe(el);
+        });
+
+        // Animate stats on scroll
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const statNumber = entry.target.querySelector('.stat-number');
+                    const finalValue = statNumber.textContent;
+                    let startValue = 0;
+                    const duration = 2000;
+                    const increment = parseInt(finalValue) / (duration / 16);
+                    
+                    const counter = setInterval(() => {
+                        startValue += increment;
+                        if (startValue >= parseInt(finalValue)) {
+                            statNumber.textContent = finalValue;
+                            clearInterval(counter);
+                        } else {
+                            statNumber.textContent = Math.floor(startValue) + (finalValue.includes('+') ? '+' : finalValue.includes('%') ? '%' : '');
+                        }
+                    }, 16);
+                    
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.stat-card').forEach(card => {
+            statsObserver.observe(card);
+        });
+    </script>
+</body>
+</html>

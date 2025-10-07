@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>Escape from Evil Haifa — Enhanced</title>
+    <style>
+        /* ---------- Basic layout & visuals ---------- */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; touch-action: none;
+        }
+        #gameContainer {
+            position: relative;
+            width: 100vw; height: 100vh;
+            max-width: 800px; max-height: 600px;
+            background: linear-gradient(to bottom, #87ceeb 0%, #98d8e8 100%);
+            border: 5px solid #333; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        @media (max-width: 800px) {
+            #gameContainer { width: 100vw; height: 100vh; max-width: 100vw; max-height: 100vh; border-radius: 0; border: none; }
+        }
+        .sprite { position: absolute; transition: all 0.05s linear; pointer-events: none; }
+        /* Mouse (player) */
+       /* Mouse (player) */
+/* Mouse (player) */
+#mouse {
+    width: 60px; 
+    height: 60px; 
+    background: url('ahmed.png') no-repeat center center;
+    background-size: contain;
+    border-radius: 0;
+    border: none;
+    cursor: pointer; 
+    z-index: 100; 
+    box-shadow: none; /* Change this to remove shadow */
+}
+
+/* Remove the mouse ears */
+#mouse::before, #mouse::after {
+    display: none;
+}
+        /* Granny (enemy) */
+        .granny { 
+            width: 100px; 
+            height: 100px; 
+            position: relative; 
+            background: url('haifa.png') no-repeat center center;
+            background-size: contain;
+            transform-origin: center;
+            transform: scale(1);
+        }
+        .granny-label { 
+            position:absolute; 
+            top:-28px; 
+            left:50%; 
+            transform: translateX(-50%); 
+            background: rgba(0,0,0,0.7); 
+            color:#ffeb3b; 
+            padding:2px 8px; 
+            border-radius:6px; 
+            font-size:12px; 
+            font-weight:bold;
+        }
+        .flipflop { position:absolute; width:30px; height:15px; background:#8B4513; border-radius:40%; bottom:-20px; left:10px; animation:swing 0.3s infinite; }
+        @keyframes swing { 0%,100%{transform:rotate(-20deg);} 50%{transform:rotate(20deg);} }
+
+        /* HP bar for main granny */
+        .hp-bar { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); width: 54px; height: 6px; background: rgba(255,255,255,0.15); border-radius: 4px; border: 1px solid rgba(0,0,0,0.4); overflow: hidden; }
+        .hp-fill { height: 100%; width: 100%; background: linear-gradient(90deg,#4caf50,#ffeb3b); transition: width 0.15s linear; }
+
+        /* Ball (collectible) */
+        .ball { width: 18px; height: 18px; border-radius: 50%; position: absolute; z-index: 80; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+
+        /* UI */
+        #score, #lives, #grannyCounter { position: absolute; font-size: 18px; font-weight: bold; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); z-index: 200; }
+        #score { top: 16px; left: 16px; } #lives { top: 16px; right: 16px; } #grannyCounter { top: 44px; left: 16px; color: #2b2a21; }
+
+        /* Start & Game Over screens */
+        #startScreen, #gameOver { position:absolute; top:0; left:0; width:100%; height:100%; display:flex; justify-content:center; align-items:center; z-index:400; padding:20px; }
+        #startScreen { background: rgba(0,0,0,0.9); flex-direction:column; }
+        #startScreen h1 { color: white; font-size: 32px; margin-bottom: 14px; text-shadow: 0 0 20px #ff69b4; text-align:center; }
+        .instructions { background: rgba(255,255,255,0.06); padding: 16px; border-radius: 10px; margin-bottom: 16px; max-width:90%; color:white; text-align:center; }
+        #startBtn, #restartBtn { padding: 12px 28px; font-size: 18px; background:#4CAF50; color:white; border:none; border-radius: 10px; cursor:pointer; }
+
+        #gameOver { display:none; background: rgba(0,0,0,0.95); color:white; flex-direction:column; text-align:center; border-radius: 12px; max-width:100%; border:3px solid #ff4444; }
+        #gameOver h1 { color: #ff4444; font-size: 30px; margin-bottom: 12px; text-shadow:0 0 8px #ff0000; }
+        #gameOver .stat { color:#4CAF50; font-weight:bold; }
+
+        /* Mobile controls */
+        #mobileControls { position:absolute; bottom:0; left:0; width:100%; height:200px; z-index:150; display:none; pointer-events:none; }
+        @media (max-width:800px), (pointer:coarse) { #mobileControls { display:block; } }
+        .control-btn { position:absolute; width:70px; height:70px; background: rgba(255,255,255,0.25); border:3px solid rgba(255,255,255,0.6); border-radius:50%; display:flex; justify-content:center; align-items:center; font-size:30px; color:white; pointer-events:all; touch-action:none; user-select:none; }
+        .control-btn:active { transform:scale(0.95); }
+        #btnUp { bottom: 130px; left: 50%; transform: translateX(-50%); }
+        #btnDown { bottom: 20px; left: 50%; transform: translateX(-50%); }
+        #btnLeft { bottom: 75px; left: calc(50% - 90px); }
+        #btnRight { bottom: 75px; left: calc(50% + 20px); }
+    </style>
+</head>
+<body>
+    <!-- Add this anywhere in your body -->
+<audio id="backgroundMusic" loop>
+    <source src="tall tall.mp3" type="audio/mpeg">
+</audio>
+    <div id="gameContainer">
+        <!-- Start screen -->
+        <div id="startScreen">
+            <h1>🏃 Escape from Evil Haifa! 🩴</h1>
+            <div class="instructions">
+                <p><strong>Controls:</strong></p>
+                <p class="desktop-only"><span style="color:#4CAF50;font-weight:bold;">W A S D</span> or arrow keys to move</p>
+                <p class="mobile-only">THIS GAME WORKS ON KEYBORD</p>
+                <p>🎯 Haifa chases you (main enemy). Collect balls to score—but every ball you take damages Haifa's HP.</p>
+                <p>⚠️ When Haifa's HP drops, clones get faster and spawn more often. Tread carefully.</p>
+                <p>💚 You have 10 lives — survive and outsmart HAIFA.</p>
+                
+            </div>
+            <button id="startBtn">Start Game</button>
+        </div>
+
+        <!-- HUD -->
+        <div id="score">Score: 0</div>
+        <div id="lives">Lives: 10</div>
+        <div id="grannyCounter">haifas: 0</div>
+
+        <!-- Player -->
+        <div id="mouse" class="sprite"></div>
+
+        <!-- Mobile controls -->
+        <div id="mobileControls">
+            <div class="control-btn" id="btnUp">▲</div>
+            <div class="control-btn" id="btnDown">▼</div>
+            <div class="control-btn" id="btnLeft">◄</div>
+            <div class="control-btn" id="btnRight">►</div>
+        </div>
+
+        <!-- Game Over -->
+        <div id="gameOver">
+            <h1>GAME OVER!</h1>
+            <p>Final Score: <span class="stat" id="finalScore">0</span></p>
+            <p>Survival Time: <span class="stat" id="survivalTime">0</span> seconds</p>
+            <p>Grannies Spawned: <span class="stat" id="grannyCount">0</span></p>
+            <p>Max Speed: <span class="stat" id="maxSpeed">0</span></p>
+            <button id="restartBtn">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+    /**************************************************************************
+     * Escape from Evil Haifa - Enhanced (single file)
+     *
+     * Features added:
+     *  - Main granny (Haifa) has HP and an HP bar.
+     *  - Collectible balls spawn; when the mouse picks a ball, Haifa loses HP.
+     *  - As Haifa's HP decreases, difficulty increases: grannies move faster and clones spawn more often.
+     *  - Fixed mobile touch handlers and ensured arena resizing behaves.
+     *
+     * Read comments inline. Tweak CONFIG values at top to change gameplay.
+     **************************************************************************/
+
+    // ---- CONFIG: tweak here to change game balance ----
+    const CONFIG = {
+        MOUSE_SPEED: 5,
+        MOUSE_START_X: 400,
+        MOUSE_START_Y: 300,
+        GRANNY_START_SPEED: 1.8,
+        GRANNY_SPEED_INCREMENT: 0.3, // added speed when cloning
+        GRANNY_SPEED_VARIATION: 0.4,
+        STARTING_LIVES: 10,
+        COLLISION_COOLDOWN: 800,
+        COLLISION_DISTANCE: 40,
+        POINTS_PER_SECOND: 10,
+        ARENA_MARGIN: 20,
+        // HP and difficulty
+        HAIFA_MAX_HP: 15,              // Haifa's health (number of balls she can take before she is "down")
+        DIFFICULTY_MAX_MULT: 1.5,     // maximum extra speed multiplier when HP is zero
+        CLONE_INTERVAL_MIN: 2000,     // base intervals (ms) - will be adjusted by difficulty
+        CLONE_INTERVAL_MAX: 6000,
+        // Ball spawn config
+        BALL_SPAWN_INTERVAL: 3000,    // how often a ball appears (ms)
+        BALL_LIFETIME: 12000,         // how long a ball stays alive (ms)
+        BALL_MAX_ON_SCREEN: 4,        // limit number of balls
+        BALL_DAMAGE: 1,               // HP Haifa loses per ball collected
+        ARENA_WIDTH: 760,             // initial arena guess; updated on start
+        ARENA_HEIGHT: 560
+    };
+
+    // ---- DOM references ----
+    const gameContainer = document.getElementById('gameContainer');
+    const mouse = document.getElementById('mouse');
+    const scoreDisplay = document.getElementById('score');
+    const livesDisplay = document.getElementById('lives');
+    const grannyCounterDisplay = document.getElementById('grannyCounter');
+    const gameOverScreen = document.getElementById('gameOver');
+    const startScreen = document.getElementById('startScreen');
+    const startBtn = document.getElementById('startBtn');
+    const restartBtn = document.getElementById('restartBtn');
+
+    // ---- game state ----
+    let grannies = [];        // all granny objects (includes main Haifa and clones)
+    let balls = [];           // active ball objects on screen
+    let score = 0;
+    let lives = CONFIG.STARTING_LIVES;
+    let gameActive = false;
+    let mouseX = CONFIG.MOUSE_START_X;
+    let mouseY = CONFIG.MOUSE_START_Y;
+    let lastTouchTime = 0;
+    let keys = {};
+    let cloneTimer = null;
+    let ballSpawner = null;
+    let gameStartTime = 0;
+    let maxGrannySpeed = CONFIG.GRANNY_START_SPEED;
+    let audioContext = null;
+    let backgroundMusic = null;
+    let arenaWidth = CONFIG.ARENA_WIDTH;
+    let arenaHeight = CONFIG.ARENA_HEIGHT;
+
+    // Update arena size based on container (called on start and resize)
+    function updateArenaSize() {
+        const rect = gameContainer.getBoundingClientRect();
+        arenaWidth = Math.max(100, rect.width - CONFIG.ARENA_MARGIN);
+        arenaHeight = Math.max(100, rect.height - CONFIG.ARENA_MARGIN);
+
+        // keep player inside bounds
+        mouseX = Math.min(mouseX, arenaWidth);
+        mouseY = Math.min(mouseY, arenaHeight);
+    }
+
+    // Utility: distance between two points
+    function distance(x1, y1, x2, y2) {
+        const dx = x1 - x2;
+        const dy = y1 - y2;
+        return Math.sqrt(dx*dx + dy*dy);
+    }
+
+    // ---- Granny class (main enemy + clones) ----
+    class Granny {
+    constructor(x, y, speed, isMain = false) {
+        this.x = x;
+        this.y = y;
+        this.isMain = isMain;
+        this.baseSpeed = speed + (Math.random() - 0.5) * CONFIG.GRANNY_SPEED_VARIATION;
+        this.speed = this.baseSpeed;
+        this.wanderAngle = Math.random() * Math.PI * 2;
+        this.wanderTimer = 0;
+
+        // Create DOM element
+        this.element = document.createElement('div');
+        this.element.className = 'granny sprite';
+        
+        // Add background image properties
+        this.element.style.backgroundSize = 'contain';
+        this.element.style.backgroundRepeat = 'no-repeat';
+        this.element.style.backgroundPosition = 'center';
+
+        // label and HP if main
+        if (this.isMain) {
+            this.element.style.backgroundImage = "url('haifa.png')";
+            this.element.innerHTML = '<div class="flipflop"></div><div class="granny-label">Haifa</div>';
+            // HP
+            this.hp = CONFIG.HAIFA_MAX_HP;
+            this.maxHp = CONFIG.HAIFA_MAX_HP;
+            // hp bar element
+            this.hpBar = document.createElement('div');
+            this.hpBar.className = 'hp-bar';
+            this.hpFill = document.createElement('div');
+            this.hpFill.className = 'hp-fill';
+            this.hpBar.appendChild(this.hpFill);
+            this.element.appendChild(this.hpBar);
+        } else {
+            this.element.innerHTML = '<div class="flipflop"></div>';
+        }
+
+        gameContainer.appendChild(this.element);
+        this.updatePosition();
+        if (this.baseSpeed > maxGrannySpeed) maxGrannySpeed = this.baseSpeed;
+    }
+
+     update() {
+    // ADD THIS AT THE VERY TOP - If Haifa is defeated, stop moving
+    if (this.isMain && this.hp <= 0) {
+        return;
+    }
+    
+    // Main granny chases the mouse; clones wander
+    if (this.isMain) {
+        const dx = mouseX - this.x;
+        const dy = mouseY - this.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        const zigzag = Math.sin(Date.now() * 0.01 + this.x) * 2;
+
+        if (dist > 5) {
+            this.x += (dx/dist) * this.speed + zigzag;
+            this.y += (dy/dist) * this.speed;
+        }
+    } else {
+        if (Math.random() < 0.02 || this.wanderTimer <= 0) {
+            this.wanderAngle = Math.random() * Math.PI * 2;
+            this.wanderTimer = 60 + Math.random() * 120;
+        }
+        this.x += Math.cos(this.wanderAngle) * this.speed;
+        this.y += Math.sin(this.wanderAngle) * this.speed;
+        this.wanderTimer--;
+    }
+
+    // bounce on arena edges by reflecting angle
+    if (this.x < 0 || this.x > arenaWidth) {
+        this.wanderAngle = Math.PI - this.wanderAngle;
+    }
+    if (this.y < 0 || this.y > arenaHeight) {
+        this.wanderAngle = -this.wanderAngle;
+    }
+
+    // clamp inside arena
+    this.x = Math.max(0, Math.min(arenaWidth, this.x));
+    this.y = Math.max(0, Math.min(arenaHeight, this.y));
+
+    this.updatePosition();
+    this.checkCollision();
+}
+
+        updatePosition() {
+            this.element.style.left = this.x + 'px';
+            this.element.style.top = this.y + 'px';
+        }
+
+        checkCollision() {
+            // Granny touching player
+            const dist = Math.sqrt( Math.pow(mouseX - this.x - 25, 2) + Math.pow(mouseY - this.y - 25, 2) );
+            if (dist < CONFIG.COLLISION_DISTANCE) {
+                const now = Date.now();
+                if (now - lastTouchTime > CONFIG.COLLISION_COOLDOWN) {
+                    lastTouchTime = now;
+                    this.onTouch();
+                }
+            }
+        }
+
+       onTouch() {
+    // Player loses a life when touched by any granny
+    lives--;
+    livesDisplay.textContent = 'Lives: ' + lives;
+    playHitSound();
+
+    // visual flash - keep the ahmed.png background
+    mouse.style.filter = 'brightness(2)';
+    mouse.style.transform = 'scale(1.2) rotate(10deg)';
+    setTimeout(() => {
+        mouse.style.filter = 'brightness(1)';
+        mouse.style.transform = 'scale(1) rotate(0deg)';
+    }, 200);
+
+    if (lives <= 0) {
+        endGame();
+    }
+}
+
+        clone() {
+            // spawn a clone near this granny
+            const angle = Math.random() * Math.PI * 2;
+            const distanceFromParent = 80 + Math.random() * 80;
+            const newX = this.x + Math.cos(angle) * distanceFromParent;
+            const newY = this.y + Math.sin(angle) * distanceFromParent;
+            const newSpeed = this.baseSpeed + CONFIG.GRANNY_SPEED_INCREMENT;
+
+            // clamp spawn inside arena
+            const clampedX = Math.max(50, Math.min(arenaWidth - 50, newX));
+            const clampedY = Math.max(50, Math.min(arenaHeight - 50, newY));
+
+            grannies.push(new Granny(clampedX, clampedY, newSpeed, false));
+            playCloneSound();
+            updateGrannyCounter();
+
+            // little pulse animation
+            this.element.style.transform = 'scale(1.3)';
+            setTimeout(() => this.element.style.transform = '', 200);
+        }
+
+       takeDamage(amount) {
+    if (!this.isMain) return;
+    this.hp = Math.max(0, this.hp - amount);
+    this.updateHpBar();
+    playHitSound();
+
+    // when HP changes, update overall difficulty
+    updateDifficultyFromHaifaHp();
+
+    // if HP reaches zero, we keep her alive but enraged (difficulty maxed)
+    if (this.hp <= 0) {
+        // visual indicator: make label red
+        const label = this.element.querySelector('.granny-label');
+        if (label) label.style.background = 'rgba(255,0,0,0.9)';
+        
+        // MOVE winGame() INSIDE the if statement
+        winGame();
+    }
+    // REMOVE winGame() from here - it was outside the if statement!
+}
+
+        updateHpBar() {
+            if (!this.isMain) return;
+            const pct = (this.hp / this.maxHp) * 100;
+            this.hpFill.style.width = pct + '%';
+            // color shift: green -> yellow -> red
+            if (pct > 60) {
+                this.hpFill.style.background = 'linear-gradient(90deg,#4caf50,#ffeb3b)';
+            } else if (pct > 30) {
+                this.hpFill.style.background = 'linear-gradient(90deg,#ffeb3b,#ff9800)';
+            } else {
+                this.hpFill.style.background = 'linear-gradient(90deg,#ff5722,#f44336)';
+            }
+        }
+
+        destroy() {
+            if (this.element && this.element.parentNode) {
+                this.element.parentNode.removeChild(this.element);
+            }
+        }
+    }
+
+    // ---- Ball class (collectible) ----
+    class Ball {
+        constructor(x, y) {
+            this.x = x; this.y = y;
+            this.element = document.createElement('div');
+            this.element.className = 'ball sprite';
+            // random color for variety
+            const colors = ['#FFD700', '#00BFFF', '#FF69B4', '#7CFC00', '#FFA500'];
+            this.element.style.background = colors[Math.floor(Math.random() * colors.length)];
+            this.element.style.left = this.x + 'px';
+            this.element.style.top = this.y + 'px';
+
+            gameContainer.appendChild(this.element);
+
+            // auto-despawn after lifetime
+            this._timeout = setTimeout(() => this.destroy(), CONFIG.BALL_LIFETIME);
+        }
+
+        checkCollected() {
+            const dist = distance(mouseX, mouseY, this.x + 9, this.y + 9); // ball center offset
+            if (dist < CONFIG.COLLISION_DISTANCE) {
+                this.onCollect();
+                return true;
+            }
+            return false;
+        }
+
+        onCollect() {
+            // increase player score
+            score += 50;
+            scoreDisplay.textContent = 'Score: ' + Math.floor(score);
+            playCollectSound();
+
+            // find main Haifa and damage her
+            const haifa = getMainHaifa();
+            if (haifa) {
+                haifa.takeDamage(CONFIG.BALL_DAMAGE);
+            }
+
+            this.destroy();
+        }
+
+        destroy() {
+            clearTimeout(this._timeout);
+            if (this.element && this.element.parentNode) this.element.parentNode.removeChild(this.element);
+            // remove from balls array (safe)
+            balls = balls.filter(b => b !== this);
+        }
+    }
+
+    function playBackgroundMusic() {
+    const bgMusic = document.getElementById('backgroundMusic');
+    if (bgMusic) {
+        bgMusic.volume = 0.5;
+        bgMusic.play().catch(e => console.log('Audio play failed:', e));
+    }
+}
+
+function stopBackgroundMusic() {
+    const bgMusic = document.getElementById('backgroundMusic');
+    if (bgMusic) {
+        bgMusic.pause();
+        bgMusic.currentTime = 0;
+    }
+}
+    function playMouseSound() {
+        if (!audioContext) return;
+        try {
+            const osc = audioContext.createOscillator(); const gain = audioContext.createGain();
+            osc.connect(gain); gain.connect(audioContext.destination);
+            osc.type = 'sine'; osc.frequency.value = 800; gain.gain.value = 0.12;
+            osc.start(); gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.12);
+            osc.stop(audioContext.currentTime + 0.12);
+        } catch {}
+    }
+    function playHitSound() {
+        if (!audioContext) return;
+        try {
+            const osc = audioContext.createOscillator(); const gain = audioContext.createGain();
+            osc.connect(gain); gain.connect(audioContext.destination);
+            osc.type = 'sawtooth'; osc.frequency.value = 160; gain.gain.value = 0.25;
+            osc.start(); gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.16);
+            osc.stop(audioContext.currentTime + 0.16);
+        } catch {}
+    }
+    function playCloneSound() {
+        if (!audioContext) return;
+        try {
+            const osc = audioContext.createOscillator(); const gain = audioContext.createGain();
+            osc.connect(gain); gain.connect(audioContext.destination);
+            osc.type = 'square'; osc.frequency.value = 340; gain.gain.value = 0.14;
+            osc.start(); osc.frequency.exponentialRampToValueAtTime(210, audioContext.currentTime + 0.24);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.24);
+            osc.stop(audioContext.currentTime + 0.24);
+        } catch {}
+    }
+    function playCollectSound() {
+        if (!audioContext) return;
+        try {
+            const osc = audioContext.createOscillator(); const gain = audioContext.createGain();
+            osc.connect(gain); gain.connect(audioContext.destination);
+            osc.type = 'triangle'; osc.frequency.value = 900; gain.gain.value = 0.18;
+            osc.start(); gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.12);
+            osc.stop(audioContext.currentTime + 0.12);
+        } catch {}
+    }
+
+    // ---- Game control functions ----
+
+  function startGame() {
+    startScreen.style.display = 'none';
+    gameActive = true;
+    score = 0;
+    lives = CONFIG.STARTING_LIVES;
+    grannies.forEach(g => g.destroy()); grannies = [];
+    balls.forEach(b => b.destroy()); balls = [];
+    gameStartTime = Date.now();
+    maxGrannySpeed = CONFIG.GRANNY_START_SPEED;
+    updateArenaSize();
+
+    // ADD THIS LINE:
+    playBackgroundMusic();
+
+    
+
+    scoreDisplay.textContent = 'Score: ' + score;
+    livesDisplay.textContent = 'Lives: ' + lives;
+
+    // position player in middle
+    mouseX = arenaWidth / 2; mouseY = arenaHeight / 2;
+    mouse.style.left = mouseX + 'px'; mouse.style.top = mouseY + 'px';
+
+    // spawn main Haifa
+    grannies.push(new Granny(100, 100, CONFIG.GRANNY_START_SPEED, true));
+    updateGrannyCounter();
+
+    // schedule cloning and ball spawning
+    scheduleNextClone();
+    startBallSpawner();
+
+    requestAnimationFrame(gameLoop);
+}
+    function winGame() {
+    gameActive = false;
+    clearTimeout(cloneTimer);
+    if (ballSpawner) clearInterval(ballSpawner);
+    
+    // Show win screen
+    gameOverScreen.innerHTML = `
+        <h1 style="color:#4CAF50;">YOU WIN! 🎉</h1>
+        <p>You defeated Haifa!</p>
+        <p>Final Score: <span class="stat">${Math.floor(score)}</span></p>
+        <p>Time: <span class="stat">${Math.floor((Date.now() - gameStartTime) / 1000)}</span>s</p>
+        <p>Lives Left: <span class="stat">${lives}</span></p>
+        <button id="restartBtn">Play Again</button>
+    `;
+    gameOverScreen.style.display = 'block';
+    
+    // Re-attach restart button
+    document.getElementById('restartBtn').addEventListener('click', restartGame);
+}
+
+function endGame() {
+    gameActive = false;
+    clearTimeout(cloneTimer);
+    if (ballSpawner) clearInterval(ballSpawner);
+    
+    // KEEP THIS:
+    stopBackgroundMusic();
+    
+    // REMOVE THESE LINES (old audio system):
+    // if (backgroundMusic) {
+    //     try { backgroundMusic.stop(); } catch {}
+    //     backgroundMusic = null;
+    // }
+
+    const survivalSeconds = Math.floor((Date.now() - gameStartTime) / 1000);
+    document.getElementById('finalScore').textContent = Math.floor(score);
+    document.getElementById('survivalTime').textContent = survivalSeconds;
+    document.getElementById('grannyCount').textContent = grannies.length;
+    document.getElementById('maxSpeed').textContent = maxGrannySpeed.toFixed(1);
+
+    gameOverScreen.style.display = 'block';
+}
+   
+    function restartGame() {
+        gameOverScreen.style.display = 'none';
+        grannies.forEach(g => g.destroy()); grannies = [];
+        balls.forEach(b => b.destroy()); balls = [];
+        startGame();
+    }
+
+    // Find main Haifa object
+    function getMainHaifa() {
+        return grannies.find(g => g.isMain) || null;
+    }
+
+    // Schedule clone spawn with adaptive interval depending on Haifa HP (difficulty)
+    function scheduleNextClone() {
+        if (!gameActive) return;
+        // adaptive interval based on Haifa HP (less HP => faster clones)
+        const haifa = getMainHaifa();
+        let hpFactor = 0;
+        if (haifa) hpFactor = (haifa.maxHp - haifa.hp) / haifa.maxHp; // 0 -> 1 as hp goes down
+        // shrink intervals by up to 50% when HP low
+        const minInt = CONFIG.CLONE_INTERVAL_MIN * (1 - hpFactor * 0.5);
+        const maxInt = CONFIG.CLONE_INTERVAL_MAX * (1 - hpFactor * 0.5);
+
+        const randomDelay = Math.random() * (maxInt - minInt) + minInt;
+        cloneTimer = setTimeout(() => {
+            if (gameActive && grannies.length > 0) {
+                const randomGranny = grannies[Math.floor(Math.random() * grannies.length)];
+                randomGranny.clone();
+                updateGrannyCounter();
+                scheduleNextClone();
+            }
+        }, randomDelay);
+    }
+
+    // Ball spawner (periodically spawn balls up to a limit)
+    function startBallSpawner() {
+        if (ballSpawner) clearInterval(ballSpawner);
+        ballSpawner = setInterval(() => {
+            if (!gameActive) return;
+            if (balls.length >= CONFIG.BALL_MAX_ON_SCREEN) return;
+            // random position inside arena with margin
+            const x = 30 + Math.random() * (arenaWidth - 60);
+            const y = 30 + Math.random() * (arenaHeight - 60);
+            const b = new Ball(x, y);
+            balls.push(b);
+        }, CONFIG.BALL_SPAWN_INTERVAL);
+    }
+
+    // When Haifa HP changes, adjust speed of all grannies
+    function updateDifficultyFromHaifaHp() {
+        const haifa = getMainHaifa();
+        if (!haifa) return;
+        const hpLost = haifa.maxHp - haifa.hp;
+        const hpPct = hpLost / haifa.maxHp; // 0..1
+        const speedMultiplier = 1 + hpPct * CONFIG.DIFFICULTY_MAX_MULT; // increases with hp loss
+
+        // Update speed for existing grannies (baseSpeed * multiplier)
+        grannies.forEach(g => {
+            g.speed = g.baseSpeed * speedMultiplier;
+            if (g.speed > maxGrannySpeed) maxGrannySpeed = g.speed;
+        });
+
+        // update clone scheduling (clear and reschedule so intervals reflect new difficulty)
+        clearTimeout(cloneTimer);
+        scheduleNextClone();
+    }
+
+    // UI helper
+    function updateGrannyCounter() {
+        grannyCounterDisplay.textContent = 'Grannies: ' + grannies.length;
+    }
+
+    // Main game loop (movement, collisions, score)
+    function gameLoop() {
+        if (!gameActive) return;
+        // accumulate score over time
+        score += CONFIG.POINTS_PER_SECOND / 60;
+        scoreDisplay.textContent = 'Score: ' + Math.floor(score);
+
+        // input movement
+        let moving = false;
+        if (keys['w'] || keys['W'] || keys['ArrowUp']) { mouseY -= CONFIG.MOUSE_SPEED; moving = true; }
+        if (keys['s'] || keys['S'] || keys['ArrowDown']) { mouseY += CONFIG.MOUSE_SPEED; moving = true; }
+        if (keys['a'] || keys['A'] || keys['ArrowLeft']) { mouseX -= CONFIG.MOUSE_SPEED; moving = true; }
+        if (keys['d'] || keys['D'] || keys['ArrowRight']) { mouseX += CONFIG.MOUSE_SPEED; moving = true; }
+
+        if (moving) {
+            const wobble = Math.sin(Date.now() * 0.02) * 2;
+            mouse.style.transform = `rotate(${wobble}deg)`;
+            if (Math.random() < 0.01) playMouseSound();
+        } else {
+            mouse.style.transform = 'rotate(0deg)';
+        }
+
+        // clamp player
+        mouseX = Math.max(0, Math.min(arenaWidth, mouseX));
+        mouseY = Math.max(0, Math.min(arenaHeight, mouseY));
+        mouse.style.left = mouseX + 'px'; mouse.style.top = mouseY + 'px';
+
+        // update grannies
+        grannies.forEach(g => g.update());
+
+        // check balls for collection
+        // iterate copy of array because collection removes
+        [...balls].forEach(b => {
+            if (b.checkCollected()) {
+                updateGrannyCounter(); // balls updated may affect UI if anything
+            }
+        });
+
+        requestAnimationFrame(gameLoop);
+    }
+
+    // ---- Input handlers (keyboard + touch) ----
+    document.addEventListener('keydown', (e) => { keys[e.key] = true; });
+    document.addEventListener('keyup', (e) => { keys[e.key] = false; });
+
+    // touch/mouse controls for mobile buttons
+    const btnUp = document.getElementById('btnUp');
+    const btnDown = document.getElementById('btnDown');
+    const btnLeft = document.getElementById('btnLeft');
+    const btnRight = document.getElementById('btnRight');
+
+    function setupTouchControl(btn, key) {
+        // multiple events: touchstart/touchend for mobile; mousedown/mouseup for desktop testing
+        btn.addEventListener('touchstart', (e) => { e.preventDefault(); keys[key] = true; }, {passive:false});
+        btn.addEventListener('touchend', (e) => { e.preventDefault(); keys[key] = false; }, {passive:false});
+        btn.addEventListener('mousedown', (e) => { e.preventDefault(); keys[key] = true; }, {passive:false});
+        btn.addEventListener('mouseup', (e) => { e.preventDefault(); keys[key] = false; }, {passive:false});
+        // also handle mouseleave to stop movement if finger leaves control
+        btn.addEventListener('mouseleave', (e) => { keys[key] = false; }, {passive:false});
+    }
+    setupTouchControl(btnUp, 'w');
+    setupTouchControl(btnDown, 's');
+    setupTouchControl(btnLeft, 'a');
+    setupTouchControl(btnRight, 'd');
+
+    // Start & restart buttons
+    startBtn.addEventListener('click', startGame);
+    restartBtn.addEventListener('click', restartGame);
+
+    // Resize behavior
+    window.addEventListener('resize', () => {
+        if (gameActive) updateArenaSize();
+    });
+
+    // Initial setup
+    updateArenaSize();
+    </script>
+    
+</body>
+</html>
